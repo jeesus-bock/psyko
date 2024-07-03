@@ -7,13 +7,22 @@ import (
 
 	"psyko/db"
 	"psyko/handlers"
+	"psyko/tcl_util"
 )
 
 func setup() *gin.Engine {
+	// Run the database initialization routine.
 	err := db.SetupDB()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+
+	// Run the TCL initialization routine.
+	err = tcl_util.SetupTcl()
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
 	log.Println("Setting up router.")
 	r := gin.Default()
 	r.LoadHTMLGlob("html/*")

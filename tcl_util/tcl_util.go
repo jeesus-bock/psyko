@@ -11,21 +11,27 @@ import (
 	"modernc.org/tcl"
 )
 
+var inter *tcl.Interp
+
+func SetupTcl() (err error) {
+	inter, err = tcl.NewInterp()
+	addEcho()
+	return
+}
+
 // RunTcl takes a TCL script and a data map and runs the script
 // enhanced with a TCL dictionary object named data.
 func RunTcl(script string, data map[string]interface{}) (ret string, err error) {
 	log.Println("HandleTcl")
 	dataDict := mapToTclDict(data)
 	log.Println("dataDict: ", dataDict)
-	i, err := tcl.NewInterp()
 	if err != nil {
 		return
 	}
-	ret, err = i.Eval(dataDict + string(script))
+	ret, err = inter.Eval(dataDict + string(script))
 	if err != nil {
 		return
 	}
-	err = i.Close()
 	return
 }
 
@@ -65,4 +71,27 @@ func GetTclEndPoints() (ret map[string]string) {
 		ret["/tcl/"+strings.TrimSuffix(file.Name(), ".tcl")] = strings.TrimPrefix(scanner.Text(), "# ")
 	}
 	return
+}
+
+func addEcho() {
+	log.Printf("%+v", inter)
+	cmd, err := inter.NewCommand(
+		"::go::echo",
+		func(clientData interface{}, in *tcl.Interp, args []string) int {
+			log.Println("added echo func")
+			// Go implementation of the Tcl ::go::echo command
+			args = append(args[1:], fmt.Sprint(clientData))
+			in.SetResult(strings.Join(args, " "))
+			return 0
+		},
+		42, // client data
+		func(clientData interface{}) {
+			// Go implemetation of the command delete handler
+			log.Printf("%+v", clientData)
+		},
+	)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	log.Printf("%+v", cmd)
 }
