@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,7 +21,12 @@ func setupRouter() *gin.Engine {
 		json.Unmarshal(bodyAsByteArray, &jsonMap)
 
 		scriptName := c.Params.ByName("name")
-		output, err := HandleTcl("tcl/"+scriptName+".tcl", jsonMap)
+
+		script, err := os.ReadFile("scripts/" + scriptName + ".tcl")
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+		output, err := HandleTcl(string(script), jsonMap)
 		if err != nil {
 			log.Fatal(err.Error())
 		}
