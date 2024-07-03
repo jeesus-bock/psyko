@@ -1,0 +1,33 @@
+package handlers
+
+import (
+	"encoding/json"
+	"io"
+	"log"
+	"net/http"
+	"os"
+
+	"github.com/gin-gonic/gin"
+
+	"psyko/tcl_util"
+)
+
+func HandleTclRequest(c *gin.Context) {
+	bodyAsByteArray, _ := io.ReadAll(c.Request.Body)
+	jsonMap := make(map[string]interface{})
+	json.Unmarshal(bodyAsByteArray, &jsonMap)
+
+	scriptName := c.Params.ByName("name")
+
+	script, err := os.ReadFile("scripts/" + scriptName + ".tcl")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	output, err := tcl_util.RunTcl(string(script), jsonMap)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	log.Println("output: ", output)
+	c.Writer.WriteHeader(http.StatusOK)
+	c.Writer.Write([]byte(output))
+}

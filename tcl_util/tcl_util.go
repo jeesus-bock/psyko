@@ -1,4 +1,4 @@
-package main
+package tcl_util
 
 import (
 	"fmt"
@@ -7,9 +7,9 @@ import (
 	"modernc.org/tcl"
 )
 
-// HandleTcl takes a TCL script and a data map and runs the script
+// RunTcl takes a TCL script and a data map and runs the script
 // enhanced with a TCL dictionary object named data.
-func HandleTcl(script string, data map[string]interface{}) (ret string, err error) {
+func RunTcl(script string, data map[string]interface{}) (ret string, err error) {
 	log.Println("HandleTcl")
 	dataDict := mapToTclDict(data)
 	log.Println("dataDict: ", dataDict)
