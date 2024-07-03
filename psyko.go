@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	// "io"
+	"io"
 	"log"
 	"net/http"
 
@@ -14,16 +14,15 @@ func setupRouter() *gin.Engine {
 
 	r := gin.Default()
 
-	r.GET("/tcl/:name", func(c *gin.Context) {
-		// bodyAsByteArray, _ := io.ReadAll(c.Request.Body)
-		bodyAsByteArray := []byte(`{ "nimi": "jussi", "ikä":42, "ammatti": "soturi" }`)
+	r.POST("/tcl/:name", func(c *gin.Context) {
+		bodyAsByteArray, _ := io.ReadAll(c.Request.Body)
 		jsonMap := make(map[string]interface{})
 		json.Unmarshal(bodyAsByteArray, &jsonMap)
 
 		scriptName := c.Params.ByName("name")
 		output, err := HandleTcl("tcl/"+scriptName+".tcl", jsonMap)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal(err.Error())
 		}
 		log.Println("output: ", output)
 		c.Writer.WriteHeader(http.StatusOK)
