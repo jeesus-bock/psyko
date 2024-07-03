@@ -12,8 +12,9 @@ func setupRouter() *gin.Engine {
 
 	r := gin.Default()
 	r.LoadHTMLGlob("html/*")
+	r.Static("/assets", "./assets")
 	r.GET("/", handlers.IndexRequest)
-	r.POST("/tcl/:name", handlers.HandleTclRequest)
+	r.POST("/tcl/:name", handlers.TclRequest)
 	return r
 }
 

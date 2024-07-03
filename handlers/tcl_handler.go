@@ -12,7 +12,7 @@ import (
 	"psyko/tcl_util"
 )
 
-func HandleTclRequest(c *gin.Context) {
+func TclRequest(c *gin.Context) {
 	bodyAsByteArray, _ := io.ReadAll(c.Request.Body)
 	jsonMap := make(map[string]interface{})
 	json.Unmarshal(bodyAsByteArray, &jsonMap)
