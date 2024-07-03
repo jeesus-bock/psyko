@@ -1,8 +1,11 @@
 package tcl_util
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
 	"log"
+	"os"
 
 	"modernc.org/tcl"
 )
@@ -40,5 +43,25 @@ func mapToTclDict(data map[string]interface{}) (ret string) {
 		ret = ret + fmt.Sprintf(` %s "%v"`, k, v)
 	}
 	ret = ret + "]\n"
+	return
+}
+
+func GetTclEndPoints() (ret map[string]string) {
+	ret = make(map[string]string)
+	files, err := os.ReadDir("scripts")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, file := range files {
+		log.Println("TCL script: ", file.Name())
+		b, err := os.ReadFile("scripts/" + file.Name())
+		if err != nil {
+			panic(err)
+		}
+		scanner := bufio.NewScanner(bytes.NewReader(b))
+		scanner.Scan()
+		ret[file.Name()] = scanner.Text()
+	}
 	return
 }

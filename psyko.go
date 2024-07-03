@@ -11,7 +11,8 @@ func setupRouter() *gin.Engine {
 	log.Println("Setting up router.")
 
 	r := gin.Default()
-
+	r.LoadHTMLGlob("html/*")
+	r.GET("/", handlers.IndexRequest)
 	r.POST("/tcl/:name", handlers.HandleTclRequest)
 	return r
 }
