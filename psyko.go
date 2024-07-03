@@ -4,12 +4,17 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
+
+	"psyko/db"
 	"psyko/handlers"
 )
 
-func setupRouter() *gin.Engine {
+func setup() *gin.Engine {
+	err := db.SetupDB()
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 	log.Println("Setting up router.")
-
 	r := gin.Default()
 	r.LoadHTMLGlob("html/*")
 	r.Static("/assets", "./assets")
@@ -19,6 +24,6 @@ func setupRouter() *gin.Engine {
 }
 
 func main() {
-	r := setupRouter()
+	r := setup()
 	r.Run("0.0.0.0:8080")
 }
