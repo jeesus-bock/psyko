@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"modernc.org/tcl"
 )
@@ -61,7 +62,7 @@ func GetTclEndPoints() (ret map[string]string) {
 		}
 		scanner := bufio.NewScanner(bytes.NewReader(b))
 		scanner.Scan()
-		ret[file.Name()] = scanner.Text()
+		ret["/tcl/"+strings.TrimSuffix(file.Name(), ".tcl")] = strings.TrimPrefix(scanner.Text(), "# ")
 	}
 	return
 }
