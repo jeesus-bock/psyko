@@ -9,5 +9,5 @@ import (
 func IndexRequest(c *gin.Context) {
 	endpoints := tcl_util.GetTclEndPoints()
 	// Render the HTML file
-	c.HTML(200, "alpine.html", gin.H{"endpoints": endpoints})
+	c.HTML(200, "indexHTML", gin.H{"endpoints": endpoints, "title": "The Title"})
 }

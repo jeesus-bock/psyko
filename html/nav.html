@@ -1,0 +1,13 @@
+{{ define "navHTML" }}
+
+<body x-data="{ endpoints }">
+  <nav>
+    <template x-for="(desc, endpoint) in endpoints">
+      <div>
+        <button x-text="endpoint"></button>
+        <span x-text="desc"></span>
+      </div>
+    </template>
+  </nav>
+</body>
+{{ end }}
