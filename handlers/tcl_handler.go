@@ -18,12 +18,22 @@ func TclRequest(c *gin.Context) {
 	json.Unmarshal(bodyAsByteArray, &jsonMap)
 
 	scriptName := c.Params.ByName("name")
+	if scriptName == "helpers" {
+		c.JSON(404, gin.H{"code": "PAGE_NOT_FOUND", "message": "Page not found"})
+		return
+	}
+
+	// Load up the helper procedures for scripts to use.
+	helpers, err := os.ReadFile("scripts/helpers.tcl")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
 	script, err := os.ReadFile("scripts/" + scriptName + ".tcl")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	output, err := tcl_util.RunTcl(string(script), jsonMap)
+	output, err := tcl_util.RunTcl(string(helpers)+string(script), jsonMap)
 	if err != nil {
 		log.Fatal(err.Error())
 	}

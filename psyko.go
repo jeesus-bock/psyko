@@ -25,6 +25,7 @@ func setup() *gin.Engine {
 
 	log.Println("Setting up router.")
 	r := gin.Default()
+	r.SetTrustedProxies([]string{"127.0.0.1"})
 	r.LoadHTMLGlob("html/*")
 	r.Static("/assets", "./assets")
 	r.GET("/", handlers.IndexRequest)
